@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="jumbotron">
+    <h1>Puppy Company Blog</h1>
+    <p>Welcome to Our Company's Blog Page</p>
+  </div>
+
+  <div class="container">
+
+    {% for post in blog_posts.items %}
+
+    <div class="card border-primary mb-3" >
+
+      <div class="card-body">
+
+
+        <h2><a class="card-title" href="  {{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}">{{ post.title }}</a></h2>
+        Written By: <a href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+        <!-- post.id is referencing each unique id that is created when a blog post gets created,
+          this is due to the fact that in our views.py we set blog_post to equal an instance of our model
+          BlogPost -->
+        <p>Published on: {{ post.date.strftime('%Y-%m-%d') }}</p>
+        <p class="card-text">{{ post.text[:100] }}...</p>
+        <a href="{{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}" class="btn btn-primary">Read Blog Post</a>
+      </div>
+    </div>
+
+   {% endfor %}
+
+   <nav aria-label="Page navigation example">
+     <ul class="pagination justify-content-center">
+       {% for page_num in blog_posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+          {% if blog_posts.page == page_num %}
+          <!-- if i am on the same page of the blog post that i am currently looking at -->
+          <li class="page-item disabled">
+          <!-- then the numer of the page will look disabled because we are viewing it -->
+            <a class="page-link" href="{{ url_for('core.index', page=page_num) }}">{{ page_num }}</a></li>
+          </li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('core.index', page=page_num) }}">{{ page_num }}</a></li>
+          {% endif %}
+      {% endfor %}
+    </nav>
+
+
+
+
+{% endblock %}
